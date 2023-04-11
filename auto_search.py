@@ -47,10 +47,12 @@ def run():
     os.makedirs(output_path)
 
 
-    print("從上次中斷地方開始查詢?  1.Yes   0.No")
-    recovery=input("請輸入1~4數字後按Enter:")
-    while(recovery!='1' and recovery!='0'):
-        print("輸入錯誤，請重新輸入1~4的數字")
+    # print("從上次中斷地方開始查詢?  1.Yes   0.No")
+    # recovery=input("請輸入數字後按Enter:")
+    # while(recovery!='1' and recovery!='0'):
+    #     print("輸入錯誤，請重新輸入0或1")
+
+    recovery='0'
 
     if(recovery=='1'):
         ask_id_and_pwd()
