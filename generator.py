@@ -13,53 +13,61 @@ from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import *
 import warnings
 from openpyxl.reader.excel import load_workbook
-from openpyxl.styles import Border,Side,Alignment
+from openpyxl.styles import Border,Side,Alignment,Font
 import unittest, time, re
 warnings.filterwarnings("ignore")
 
+def print_settings():
+    global ws,f,max_c
+    ws.insert_rows(1)
+    ws['A1']=f.replace('.xlsx','')
+    ws.merge_cells('A1:'+chr(64+max_c)+'1')
+    ws.print_title_rows = '1:2'
+    thin=Side(border_style="thin",color='000000')
+    border=Border(left=thin,right=thin,bottom=thin,top=thin)
+    align=Alignment(horizontal='left',vertical='center',wrap_text=True)
+    title_align=Alignment(horizontal='center',vertical='center',wrap_text=True)
+    for row in ws.iter_rows(max_col=max_c):
+        for cell in row:
+            cell.border=border
+            cell.alignment=align
+    ws['A1'].alignment=title_align
+    ws['A1'].font=Font(size=14,bold=True)
+
+
+
 # # # # # Create result folder
 localtime=time.localtime()
-output_path = time.strftime("%m月%d日%H點%M分%S秒輸出結果/", localtime)
+output_path = time.strftime("輸出/%m月%d日%H點%M分%S秒輸出結果/", localtime)
 year=time.strftime("%Y",localtime)
 民國年=str(int(year)-1911)
 os.makedirs(output_path)
 
-thin=Side(border_style="thin",color='000000')
-border=Border(left=thin,right=thin,bottom=thin,top=thin)
-align=Alignment(horizontal='left',vertical='center',wrap_text=True)
+
 
 
 # # # # # Ask mode
 print("請選擇功能:")
-print("1.以 原始檔 製作 名冊")
-print("2.以 名冊 製作 禮品名單")
-print("3.以 名冊 製作 會費扣繳名單")
-print("4.以 名冊 製作 會員大會名單(含簽到單)")
-mode=input("請輸入1~4數字後按Enter:")
-while(mode!='1' and mode!='2' and mode!='3' and mode!='4'):
-    print("輸入錯誤，請重新輸入1~4的數字")
-    mode=input("請輸入1~4數字後按Enter:")
+print("1.以 名冊 製作 禮品名單")
+print("2.以 名冊 製作 會費扣繳名單")
+print("3.以 名冊 製作 會員大會名單(含簽到單)")
+mode=input("請輸入1~3數字後按Enter:")
+while(mode!='1' and mode!='2' and mode!='3'):
+    print("輸入錯誤，請重新輸入1~3的數字")
+    mode=input("請輸入1~3數字後按Enter:")
 
 # # # # # Ask input file and create df
 print("請選擇名冊")
 root1 = Tk()
 root1.withdraw()
 filename = filedialog.askopenfilename()
+# filename = os.path.join(root1)
 df = pd.read_excel(filename)  
  
 
-# # # # # 2.以名冊製作禮品名單
-if(mode=='2'):
+# # # # # 以名冊製作禮品名單
+if(mode=='1'):
 
-    
-
-    # df=df.drop('性別', axis='columns')
-    # df=df.drop('職稱', axis='columns')
-    # df=df.drop('備注', axis='columns')
-    # df=df.drop('已簽委託書', axis='columns')
-    # df=df.drop('Unnamed: 10', axis='columns')
-    # df=df.drop('Unnamed: 11', axis='columns')
-    # df=df.drop('Unnamed: 12', axis='columns')
     df=df[['會員編號','姓名','工號','單位','辦公室','電話']]
     df.to_excel(output_path+民國年+'全院禮品名冊.xlsx', index=False)
     
@@ -149,7 +157,6 @@ if(mode=='2'):
         for f in fs:
             wb=load_workbook(os.path.join(root,f))
             ws=wb.active
-            ws.print_title_rows = '1:1' # the first row
             流水號=0
             for row in ws.iter_rows(max_col=1):
                 for cell in row:
@@ -159,19 +166,14 @@ if(mode=='2'):
             ws.column_dimensions['D'].width=10.0    #unit
             ws.column_dimensions['E'].width=25.0    #office
             ws.column_dimensions['F'].width=15.0    #telephone
-            # thin=Side(border_style="thin",color='000000')
-            # border=Border(left=thin,right=thin,bottom=thin)
-            # align=Alignment(horizontal='left',vertical='center',wrap_text=True)
             ws['A1']="編號"
             if(re.search('全院禮品名冊',f)):
                 max_c=6
             else:
                 ws['G1']="簽名欄"
                 max_c=7
-            for row in ws.iter_rows(max_col=max_c):
-                for cell in row:
-                    cell.border=border
-                    cell.alignment=align
+
+            print_settings()
             wb.save(os.path.join(root,f))
 
     print("名單製造完成，請至 "+output_path+" 資料夾查詢")
@@ -179,17 +181,9 @@ if(mode=='2'):
 
 
 
-# # # # # 3.以名冊製作會費扣繳名單
-if(mode == '3'):
+# # # # # 以名冊製作會費扣繳名單
+if(mode == '2'):
     扣繳金額='600'
-    # df=df.drop('辦公室', axis='columns')
-    # df=df.drop('職稱', axis='columns')
-    # df=df.drop('電話', axis='columns')
-    # df=df.drop('備注', axis='columns')
-    # df=df.drop('已簽委託書', axis='columns')
-    # df=df.drop('Unnamed: 10', axis='columns')
-    # df=df.drop('Unnamed: 11', axis='columns')
-    # df=df.drop('Unnamed: 12', axis='columns')
     df=df[['會員編號','姓名','工號','性別','單位']]
     df=df.sort_values(by="單位")
     df.to_excel(output_path+民國年+'扣繳名冊to人力.xlsx', index=False)
@@ -201,9 +195,6 @@ if(mode == '3'):
             wb=load_workbook(os.path.join(root,f))
             ws=wb.active
             ws.print_title_rows = '1:1' # the first row
-            # thin=Side(border_style="thin",color='000000')
-            # border=Border(left=thin,right=thin,bottom=thin)
-            # align=Alignment(horizontal='left',vertical='center')
             for row in ws.iter_rows(max_col=1):
                 for cell in row:
                     cell.value=流水號
@@ -214,23 +205,14 @@ if(mode == '3'):
             ws['A1']="編號"
             ws['G1']="扣繳金額"
             ws['F1']="備註"
-            for row in ws.iter_rows(max_col=7):
-                for cell in row:
-                    cell.border=border
-                    cell.alignment=align
+            ws.column_dimensions['E'].width=10.0 
+            max_c=7
+            print_settings()
             wb.save(os.path.join(root,f))
     print("名單製造完成，請至 "+output_path+" 資料夾查詢")
 
-# # # # # 4.以名冊製作會員大會名單
-if(mode == '4'):
-    # df=df.drop('辦公室', axis='columns')
-    # df=df.drop('職稱', axis='columns')
-    # df=df.drop('電話', axis='columns')
-    # df=df.drop('備注', axis='columns')
-    # df=df.drop('已簽委託書', axis='columns')
-    # df=df.drop('Unnamed: 10', axis='columns')
-    # df=df.drop('Unnamed: 11', axis='columns')
-    # df=df.drop('Unnamed: 12', axis='columns')
+# # # # # 以名冊製作會員大會名單
+if(mode == '3'):
     df=df[['會員編號','姓名','工號','性別','單位']]
     df=df.sort_values(by="單位")
     df.to_excel(output_path+民國年+'大會手冊名冊.xlsx', index=False)
@@ -262,7 +244,7 @@ if(mode == '4'):
                 now_count=0
                 df_temp=pd.DataFrame()
                 df_temp=df_temp.append(row)
-    df_temp=df_temp[['會員編號','姓名','工號','單位','辦公室','電話']]
+    df_temp=df_temp[['會員編號','姓名','工號','性別','單位']]
     df_temp.to_excel(output_path+民國年+df['單位'][index-1]+'大會簽到表.xlsx', index=False)
     df_minor_unit=df_minor_unit[['會員編號','姓名','工號','性別','單位']]
     df_minor_unit.to_excel(output_path+民國年+'其他單位大會簽到表.xlsx', index=False)
@@ -274,9 +256,6 @@ if(mode == '4'):
             wb=load_workbook(os.path.join(root,f))
             ws=wb.active
             ws.print_title_rows = '1:1' # the first row
-            # thin=Side(border_style="thin",color='000000')
-            # border=Border(left=thin,right=thin,bottom=thin,top=thin)
-            # align=Alignment(horizontal='left',vertical='center')
             for row in ws.iter_rows(max_col=1):
                 for cell in row:
                     cell.value=流水號
@@ -287,10 +266,8 @@ if(mode == '4'):
             else:
                 ws['F1']="簽名欄"
                 max_c=6
-            for row in ws.iter_rows(max_col=max_c):
-                for cell in row:
-                    cell.border=border
-                    cell.alignment=align
+            ws.column_dimensions['E'].width=10.0 
+            print_settings()
 
             wb.save(os.path.join(root,f))
 
