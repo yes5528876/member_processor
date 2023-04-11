@@ -91,6 +91,7 @@ def save_json():
 
 
 def ask_id_and_pwd():
+    print('請在小框框輸入帳號密碼')
     root = Tk()
     root.withdraw
     root.title('Login ITRI')
