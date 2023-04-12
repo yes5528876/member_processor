@@ -17,7 +17,7 @@ from openpyxl.styles import Border,Side,Alignment,Font
 import unittest, time, re
 warnings.filterwarnings("ignore")
 
-def print_settings():
+def printer_settings():
     global ws,f,max_c
     ws.insert_rows(1)
     ws['A1']=f.replace('.xlsx','')
@@ -173,7 +173,7 @@ if(mode=='1'):
                 ws['G1']="簽名欄"
                 max_c=7
 
-            print_settings()
+            printer_settings()
             wb.save(os.path.join(root,f))
 
     print("名單製造完成，請至 "+output_path+" 資料夾查詢")
@@ -207,7 +207,7 @@ if(mode == '2'):
             ws['F1']="備註"
             ws.column_dimensions['E'].width=10.0 
             max_c=7
-            print_settings()
+            printer_settings()
             wb.save(os.path.join(root,f))
     print("名單製造完成，請至 "+output_path+" 資料夾查詢")
 
@@ -267,7 +267,7 @@ if(mode == '3'):
                 ws['F1']="簽名欄"
                 max_c=6
             ws.column_dimensions['E'].width=10.0 
-            print_settings()
+            printer_settings()
 
             wb.save(os.path.join(root,f))
 
