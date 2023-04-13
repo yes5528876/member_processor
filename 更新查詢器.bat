@@ -1,4 +1,4 @@
 cd %~dp0
-git pull
-echo 更新完成
+git reset --hard origin/master
+echo "Update Complete!"
 pause
