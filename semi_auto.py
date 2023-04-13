@@ -39,7 +39,7 @@ index=0
 last_index=0
 row=None
 driver=None
-auto_enable=False
+auto_enable=True
 
 def key_listener():
     print("按下F1切換自動/半自動模式")
