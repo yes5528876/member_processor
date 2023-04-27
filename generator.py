@@ -18,7 +18,7 @@ import unittest, time, re
 warnings.filterwarnings("ignore")
 
 def printer_settings():
-    global ws,f,max_c
+    global ws,f,max_c,mode
     ws.insert_rows(1)
     ws['A1']=f.replace('.xlsx','')
     ws.merge_cells('A1:'+chr(64+max_c)+'1')
@@ -27,6 +27,9 @@ def printer_settings():
     border=Border(left=thin,right=thin,bottom=thin,top=thin)
     align=Alignment(horizontal='left',vertical='center',wrap_text=True)
     title_align=Alignment(horizontal='center',vertical='center',wrap_text=True)
+    ws.column_dimensions['B'].width = 10
+    if(mode=='3'):
+        ws.column_dimensions['F'].width = 20
     for row in ws.iter_rows(max_col=max_c):
         for cell in row:
             cell.border=border
