@@ -82,31 +82,54 @@ if(mode=='1'):
     df南創=pd.DataFrame()
     df生醫=pd.DataFrame()
     df其他=pd.DataFrame()
-
-    for index,row in df.iterrows():
-        if(re.search("^中興",str(df['辦公室'][index]))):
-            df中興=df中興.append(row)
+    for index, row in df.iterrows():
+        if re.search("^中興", str(df['辦公室'][index])):
+            df中興 = pd.concat([df中興, pd.DataFrame([row])], ignore_index=True)
             continue
-        if(re.search("^六甲",str(df['辦公室'][index]))):
-            df六甲=df六甲.append(row)
+        if re.search("^六甲", str(df['辦公室'][index])):
+            df六甲 = pd.concat([df六甲, pd.DataFrame([row])], ignore_index=True)
             continue
-        if(re.search("^中創",str(df['辦公室'][index]))):
-            df中創=df中創.append(row)
+        if re.search("^中創", str(df['辦公室'][index])):
+            df中創 = pd.concat([df中創, pd.DataFrame([row])], ignore_index=True)
             continue
-        if(re.search("^光復",str(df['辦公室'][index]))):
-            df光復=df光復.append(row)
+        if re.search("^光復", str(df['辦公室'][index])):
+            df光復 = pd.concat([df光復, pd.DataFrame([row])], ignore_index=True)
             continue
-        if(re.search("^沙崙",str(df['辦公室'][index]))):
-            df沙崙=df沙崙.append(row)
+        if re.search("^沙崙", str(df['辦公室'][index])):
+            df沙崙 = pd.concat([df沙崙, pd.DataFrame([row])], ignore_index=True)
             continue
-        if(re.search("^南創",str(df['辦公室'][index]))):
-            df南創=df南創.append(row)
+        if re.search("^南創", str(df['辦公室'][index])):
+            df南創 = pd.concat([df南創, pd.DataFrame([row])], ignore_index=True)
             continue
-        if(re.search("^新竹生醫",str(df['辦公室'][index]))):
-            df生醫=df生醫.append(row)
+        if re.search("^新竹生醫", str(df['辦公室'][index])):
+            df生醫 = pd.concat([df生醫, pd.DataFrame([row])], ignore_index=True)
             continue
-        df其他=df其他.append(row)
-    df中興=df中興.sort_values(by="單位")
+        df其他 = pd.concat([df其他, pd.DataFrame([row])], ignore_index=True)
+    # for index,row in df.iterrows():
+    #     if(re.search("^中興",str(df['辦公室'][index]))):
+    #         df中興=df中興.append(row)
+    #         continue
+    #     if(re.search("^六甲",str(df['辦公室'][index]))):
+    #         df六甲=df六甲.append(row)
+    #         continue
+    #     if(re.search("^中創",str(df['辦公室'][index]))):
+    #         df中創=df中創.append(row)
+    #         continue
+    #     if(re.search("^光復",str(df['辦公室'][index]))):
+    #         df光復=df光復.append(row)
+    #         continue
+    #     if(re.search("^沙崙",str(df['辦公室'][index]))):
+    #         df沙崙=df沙崙.append(row)
+    #         continue
+    #     if(re.search("^南創",str(df['辦公室'][index]))):
+    #         df南創=df南創.append(row)
+    #         continue
+    #     if(re.search("^新竹生醫",str(df['辦公室'][index]))):
+    #         df生醫=df生醫.append(row)
+    #         continue
+    #     df其他=df其他.append(row)
+    print(df中興)
+    df中興=df中興.sort_values(by='單位')
     df中興=df中興[['會員編號','姓名','工號','單位','辦公室','電話']]
     df六甲=df六甲[['會員編號','姓名','工號','單位','辦公室','電話']]
     df中創=df中創[['會員編號','姓名','工號','單位','辦公室','電話']]
@@ -135,21 +158,21 @@ if(mode=='1'):
     for index,row in df.iterrows():
         if(now_unit==df['單位'][index]):
             now_count=now_count+1
-            df_temp=df_temp.append(row)
+            df_temp = pd.concat([df_temp, pd.DataFrame([row])], ignore_index=True)
         else:
             if(now_count<minor_unit_threshold):
-                df_minor_unit=df_minor_unit.append(df_temp)
+                df_minor_unit = pd.concat([df_minor_unit, pd.DataFrame(df_temp)], ignore_index=True)
                 now_unit=df['單位'][index]
                 now_count=0
                 df_temp=pd.DataFrame()
-                df_temp=df_temp.append(row)
+                df_temp = pd.concat([df_temp, pd.DataFrame([row])], ignore_index=True)
             else:
                 df_temp=df_temp[['會員編號','姓名','工號','單位','辦公室','電話']]
                 df_temp.to_excel(output_path+民國年+'禮品(中興院區'+df['單位'][index-1]+')發放名冊.xlsx', index=False)
                 now_unit=df['單位'][index]
                 now_count=0
                 df_temp=pd.DataFrame()
-                df_temp=df_temp.append(row)
+                df_temp = pd.concat([df_temp, pd.DataFrame([row])], ignore_index=True)
     df_temp=df_temp[['會員編號','姓名','工號','單位','辦公室','電話']]
     df_temp.to_excel(output_path+民國年+'禮品(中興院區'+df['單位'][index-1]+')發放名冊.xlsx', index=False)
     df_minor_unit=df_minor_unit[['會員編號','姓名','工號','單位','辦公室','電話']]
@@ -232,21 +255,22 @@ if(mode == '3'):
     for index,row in df.iterrows():
         if(now_unit==df['單位'][index]):
             now_count=now_count+1
-            df_temp=df_temp.append(row)
+            df_temp = pd.concat([df_temp, pd.DataFrame([row])], ignore_index=True)
         else:
             if(now_count<minor_unit_threshold):
-                df_minor_unit=df_minor_unit.append(df_temp)
+                # df_minor_unit=df_minor_unit.append(df_temp)
+                df_minor_unit = pd.concat([df_minor_unit, pd.DataFrame(df_temp)], ignore_index=True)
                 now_unit=df['單位'][index]
                 now_count=0
                 df_temp=pd.DataFrame()
-                df_temp=df_temp.append(row)
+                df_temp = pd.concat([df_temp, pd.DataFrame([row])], ignore_index=True)
             else:
                 df_temp=df_temp[['會員編號','姓名','工號','性別','單位']]
                 df_temp.to_excel(output_path+民國年+df['單位'][index-1]+'大會簽到表.xlsx', index=False)
                 now_unit=df['單位'][index]
                 now_count=0
                 df_temp=pd.DataFrame()
-                df_temp=df_temp.append(row)
+                df_temp = pd.concat([df_temp, pd.DataFrame([row])], ignore_index=True)
     df_temp=df_temp[['會員編號','姓名','工號','性別','單位']]
     df_temp.to_excel(output_path+民國年+df['單位'][index-1]+'大會簽到表.xlsx', index=False)
     df_minor_unit=df_minor_unit[['會員編號','姓名','工號','性別','單位']]
